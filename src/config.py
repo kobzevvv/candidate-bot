@@ -1,7 +1,7 @@
 """Application settings loaded from environment variables."""
 from __future__ import annotations
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     # Daily.co
     daily_api_key: str = Field(..., alias="DAILY_API_KEY")
 
-    # OpenAI
-    openai_api_key: str = Field(..., alias="OPENAI_API_KEY")
+    # OpenAI (accepts OPENAI_API_KEY or LLM_API_KEY)
+    openai_api_key: str = Field(..., validation_alias=AliasChoices("OPENAI_API_KEY", "LLM_API_KEY"))
     openai_model: str = Field("gpt-4o-mini", alias="OPENAI_MODEL")
 
     # ElevenLabs
