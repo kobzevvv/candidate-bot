@@ -100,6 +100,7 @@ async def run_candidate_bot(
             allow_interruptions=True,
             enable_metrics=True,
         ),
+        enable_rtvi=False,
     )
 
     # Proactive greeting: say hello after joining so the interviewer hears us
