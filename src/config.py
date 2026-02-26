@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     elevenlabs_api_key: str = Field(..., alias="ELEVENLABS_API_KEY")
     elevenlabs_voice_id: str = Field(..., alias="ELEVENLABS_VOICE_ID")
 
+    # STT
+    stt_provider: str = Field("whisper", alias="STT_PROVIDER")
+    deepgram_api_key: str = Field("", alias="DEEPGRAM_API_KEY")
+
     # VAD / turn settings
     vad_stop_secs: float = Field(1.2, alias="VAD_STOP_SECS")
     user_speech_timeout: float = Field(2.0, alias="USER_SPEECH_TIMEOUT")

@@ -108,6 +108,9 @@ async def run_candidate_bot(
 
 
 def _build_stt(settings: Settings):
-    from pipecat.services.openai.stt import OpenAISTTService
+    if settings.stt_provider == "deepgram" and settings.deepgram_api_key:
+        from pipecat.services.deepgram.stt import DeepgramSTTService
+        return DeepgramSTTService(api_key=settings.deepgram_api_key)
 
+    from pipecat.services.openai.stt import OpenAISTTService
     return OpenAISTTService(api_key=settings.openai_api_key)
