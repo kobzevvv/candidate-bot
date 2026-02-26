@@ -54,6 +54,7 @@ async def run_candidate_bot(
             audio_out_enabled=True,
             camera_out_enabled=False,
             vad_analyzer=vad_analyzer,
+            audio_in_user_tracks=False,
         ),
     )
 
