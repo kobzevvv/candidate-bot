@@ -1,10 +1,12 @@
 """Pipecat pipeline for the candidate bot."""
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
+from pipecat.frames.frames import TTSSpeakFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
@@ -99,6 +101,31 @@ async def run_candidate_bot(
             enable_metrics=True,
         ),
     )
+
+    # Proactive greeting: say hello after joining so the interviewer hears us
+    greeted = False
+
+    @transport.event_handler("on_first_participant_joined")
+    async def on_first_joined(transport, participant):
+        nonlocal greeted
+        if greeted:
+            return
+        greeted = True
+        name = participant.get("info", {}).get("userName", "") or "interviewer"
+        greeting = f"Hi {name}, I'm {persona.name}. Nice to meet you, I'm ready for the interview."
+        logger.info("Candidate bot greeting: %s", greeting)
+        await task.queue_frames([TTSSpeakFrame(text=greeting)])
+
+    @transport.event_handler("on_participant_joined")
+    async def on_joined(transport, participant):
+        nonlocal greeted
+        if greeted:
+            return
+        greeted = True
+        name = participant.get("info", {}).get("userName", "") or "interviewer"
+        greeting = f"Hi {name}, I'm {persona.name}. Nice to meet you, I'm ready for the interview."
+        logger.info("Candidate bot greeting: %s", greeting)
+        await task.queue_frames([TTSSpeakFrame(text=greeting)])
 
     runner = PipelineRunner(handle_sigint=False)
 
